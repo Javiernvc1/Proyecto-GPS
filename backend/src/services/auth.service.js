@@ -21,6 +21,8 @@ const { ACCESS_JWT_SECRET, REFRESH_JWT_SECRET} = require("../config/env.config")
 async function login(credentials){
     try {
         const { email, password } = credentials;
+        console.log(email, password);
+
         // Busqueda y verificacion de usuario
         const userFound = await User.findOne({email: email})
             .populate("roleUser")
@@ -91,8 +93,67 @@ async function refresh(cookies){
     }
 }
 
+const crypto = require('crypto');
+
+/**
+ * Servicio para manejar el olvido de contraseña de un usuario.
+ * @param {string} email - Correo electrónico del usuario.
+ * @returns {Promise<[Object, string]>} Promesa que devuelve un objeto de usuario y un error si existe.
+ */
+async function forgotPassword(email) {
+    try {
+        // Buscar al usuario por correo electrónico
+        const user = await User.findOne({ email });
+        if (!user) {
+            return [null, "No se encontró un usuario con ese correo electrónico"];
+        }
+
+        // Generar token de restablecimiento de contraseña
+        const resetToken = crypto.randomBytes(20).toString('hex');
+
+        // Guardar el token de restablecimiento de contraseña y la fecha de vencimiento en el usuario
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hora
+        await user.save();
+
+        return [user, null];
+    } catch (error) {
+        return [null, error.message];
+    }
+}
+
+/**
+ * Servicio para manejar el restablecimiento de contraseña de un usuario.
+ * @param {string} token - Token de restablecimiento de contraseña.
+ * @param {string} newPassword - Nueva contraseña del usuario.
+ * @returns {Promise<[Object, string]>} Promesa que devuelve un objeto de usuario y un error si existe.
+ */
+async function resetPassword(token, newPassword) {
+    try {
+        // Buscar al usuario por el token de restablecimiento de contraseña
+        const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
+        if (!user) {
+            return [null, "El token de restablecimiento de contraseña es inválido o ha expirado"];
+        }
+
+        // Encriptar la nueva contraseña antes de asignarla
+        const encryptedPassword = await User.encryptPassword(newPassword);
+
+        // Establecer la nueva contraseña encriptada y limpiar el token de restablecimiento de contraseña y la fecha de vencimiento
+        user.password = encryptedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        return [user, null];
+    } catch (error) {
+        return [null, error.message];
+    }
+}
 
 module.exports = {
     login,
-    refresh
+    refresh,
+    forgotPassword,
+    resetPassword
 }

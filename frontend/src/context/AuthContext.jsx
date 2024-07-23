@@ -12,11 +12,18 @@ export function AuthProvider( { children }){
     const [redirected, setRedirected] = useState(false);
 
     useEffect(() => {
-      if (!isAuthenticated && !redirected) {
+      // Obtener la ruta actual
+      const path = router.pathname;
+
+      // Verificar si la ruta actual es la de restablecer contraseña
+      const isResetPasswordRoute = path.startsWith('/auth/resetPassword');
+
+      // Solo redirigir si el usuario no está autenticado, no ha sido redirigido aún, y no está en la ruta de restablecer contraseña
+      if (!isAuthenticated && !redirected && !isResetPasswordRoute) {
           router.push('/auth');
           setRedirected(true);
       }
-  }, [isAuthenticated, redirected, router]);
+    }, [isAuthenticated, redirected, router]);
 
     return ( 
         <AuthContext.Provider value={{ isAuthenticated, user }}>

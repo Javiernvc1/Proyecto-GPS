@@ -1,6 +1,7 @@
 /* <----------------------- FUNCIONES -------------------------> */
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { getNotifications } from '@/services/notification.service.js';
 
 
 /* <---------------------- COMPONENTES ------------------------> */
@@ -34,9 +35,12 @@ import ExploreIcon from '@mui/icons-material/Explore';
 /* <----------------------- SERVICIOS  -----------------------> */
 import { logout } from "../../services/auth.service.js"
 import { getUserInformation, getUserImage } from "../../services/user.service.js"
+import { searchContent } from "../../services/visualization.service.js"
 
 
 export default function PrimarySearchAppBar( { userId }) {
+  // Estado para almacenar las notificaciones
+  const [notifications, setNotifications] = useState([]);
 
   const router = useRouter();
 
@@ -57,11 +61,34 @@ export default function PrimarySearchAppBar( { userId }) {
     getDataUser();
   },[]);
 
+// Función para cargar las notificaciones
+const loadNotifications = async () => {
+  try {
+    const fetchedNotifications = await getNotifications(userId);
+    // Asegúrate de que fetchedNotifications sea un arreglo antes de llamar a setNotifications
+    if (Array.isArray(fetchedNotifications)) {
+      setNotifications(fetchedNotifications);
+    } else {
+      // Si fetchedNotifications no es un arreglo, puedes establecer notifications a un arreglo vacío o manejar el error como prefieras
+      setNotifications([]);
+    }
+  } catch (error) {
+    console.error('Error al cargar las notificaciones', error);
+    // En caso de error, también asegúrate de establecer notifications a un arreglo vacío o manejar el error como prefieras
+    setNotifications([]);
+  }
+};
+  // Cargar las notificaciones al montar el componente
+  useEffect(() => {
+    loadNotifications();
+  }, []);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -78,6 +105,16 @@ export default function PrimarySearchAppBar( { userId }) {
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  // Función para abrir el menú de notificaciones
+  const handleNotificationMenuOpen = (event) => {
+    setNotificationAnchorEl(event.currentTarget);
+  };
+
+  // Función para cerrar el menú de notificaciones
+  const handleNotificationMenuClose = () => {
+    setNotificationAnchorEl(null);
   };
 
   const menuId = 'primary-search-account-menu';
@@ -123,9 +160,9 @@ export default function PrimarySearchAppBar( { userId }) {
       <MenuItem>
 
         <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
-          <Badge badgeContent={17} color="error">
+  
             <NotificationsIcon />
-          </Badge>
+          
         </IconButton>
         <p>Notifications</p> 
 
@@ -141,6 +178,60 @@ export default function PrimarySearchAppBar( { userId }) {
     </Menu>
   );
 
+
+    // ID para el menú de notificaciones
+    const notificationMenuId = 'primary-search-notification-menu';
+
+    // Menú de notificaciones
+  // Renderiza el menú de notificaciones con las notificaciones obtenidas
+  const renderNotificationMenu = (
+      <Menu
+        anchorEl={notificationAnchorEl}
+        id="primary-search-notification-menu"
+        keepMounted
+        open={Boolean(notificationAnchorEl)}
+        onClose={handleNotificationMenuClose}
+      >
+        {notifications.map((notification) => (
+          <MenuItem key={notification.id} onClick={handleNotificationMenuClose} 
+          style={{ backgroundColor: notification.read ? 'transparent' : '#f0f0f0' }}>
+            <Typography variant="body2">
+              {notification.contentNotification}
+            </Typography>
+            <Typography variant="caption" display="block" gutterBottom>
+              {new Date(notification.dateNotification).toLocaleString()}
+            </Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+  );
+
+
+
+  
+    const [query, setQuery] = useState('');
+    const [results, setResults] = useState([]);
+  
+    const handleSearch = async () => {
+      try {
+        const data = await searchContent(query);
+        setResults(data); // Asume que los resultados están en data directamente
+      } catch (error) {
+        console.error("Error al buscar contenido:", error);
+        // Manejar el error adecuadamente
+      }
+    };
+
+    const handleInputChange = (event) => {
+      setQuery(event.target.value);
+    };
+  
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+        handleSearch();
+      }
+    };
 
 
   return (
@@ -160,7 +251,11 @@ export default function PrimarySearchAppBar( { userId }) {
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
-            <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }}/>
+            <StyledInputBase placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+              value={query}
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}/>
           </Search>
 
           <Box sx={{ flexGrow: 1 }} />
@@ -186,10 +281,18 @@ export default function PrimarySearchAppBar( { userId }) {
 
             {/* Notificaciones*/}
             {/* <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="error">
+              <Badge badgeContent={7} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton> */}
+
+            <IconButton size="large" aria-label="show notifications" aria-controls={notificationMenuId}
+              aria-haspopup="true"
+                onClick={handleNotificationMenuOpen}
+                color="inherit"
+              >
+              <NotificationsIcon />
+            </IconButton>
 
             {/* Favoritos*/}
             {/* <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
@@ -216,6 +319,7 @@ export default function PrimarySearchAppBar( { userId }) {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      {renderNotificationMenu}
     </Box>
   );
 
