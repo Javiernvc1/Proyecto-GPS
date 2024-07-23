@@ -20,7 +20,7 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 
 /* <--------------------- COMPONENTES NAV ----------------------> */
 import NavBar from "@/components/nav/NavBar";
-
+import SideNav from "@/components/nav/SideNav";
 /* <------------------- COMPONENTES FORM ---------------------> */
 import ProfileEditForm from '@/components/form/ProfileEditForm';
 
@@ -156,21 +156,29 @@ const Profile = () => {
   return (
     <>
       <NavBar userId={user.id} />
-
-      <section className="relative block h-[500px]">
+      
+      {/* <section className="relative block h-[500px]">
         <div className="absolute top-0 w-full h-full bg-fixed bg-center bg-cover" style={{ backgroundImage: "url('https://img.myloview.fr/images/black-and-white-pattern-on-white-background-abstract-design-700-176625414.jpg')"}}>
           <span id="blackOverlay" className="w-full h-full absolute opacity-50 bg-black"></span>
         </div>
-      </section>
+      </section> */}
+      <div className="flex container justify-center mt-4">
+      <div className='grid grid-cols-1 md:grid-cols-4 md:gap-4 w-full'>
+        {/* SideNav a la izquierda */}
+        <div className='md:col-span-1 md:border-r-2 px-2'>
+          <SideNav/>
+        </div>
 
-      <section className="relative py-16 ">
-        <div className="container mx-auto px-4">
-            <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64 ">
+        
+        <div className='md:col-span-3'>
+        
+        <div className="container mx-auto px-0 py-1">
+            
                   {/*<-------------------------------------------------------- CABECERA DE PERFIL -------------------------------------------------------->*/}
                   <div className="flex flex-wrap justify-center">
                         {/*<---------------- SECCION-CABECERA FOTO DE PERFIL------------------>*/}
-                        <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center items-center">
-                          <div className="absolute -top-32 overflow-hidden h-56 w-56 flex justify-center items-center rounded-full shadow-lg shadow-zinc-600 select-none">
+                        <div className="w-full lg:w-4/12 px-4 lg:order-1 flex justify-center items-center">
+                          <div className="-top-20 overflow-hidden h-56 w-56 flex justify-center items-center rounded-full shadow-lg shadow-zinc-600 select-none">
                             <Avatar src={`http://localhost:3001/uploads/profiles/${profile.profilePicture}`} sx={{ width: '100%', height: '100%' }}></Avatar>
                           </div>
                         </div>
@@ -197,7 +205,7 @@ const Profile = () => {
                         )}
                         </div>
                         {/*<------------------ SECCION-CABECERA ESTADISTICAS ------------------>*/}
-                        <div className="w-full lg:w-4/12 px-4 lg:order-1 flex justify-center items-center">
+                        <div className="w-full lg:w-4/12 px-4 lg:order-2 flex justify-center items-center">
                             <div className="flex justify-center py-2 px-2 lg:pt-4 my-1">
                               <div className="lg:mr-4 p-3 text-center hover:bg-zinc-200 rounded transition ease-linear select-none">
                                 <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{profile.posts ? profile.posts.length : 0}</span>
@@ -215,13 +223,9 @@ const Profile = () => {
                               </div>
                             </div>
                         </div>
-                  </div>
-                  {/*<--------------------------------------------------------- CUERPO PERFIL --------------------------------------------------------->*/}
-                  <div className="pb-10">
+                        
 
-                        <div className='flex justify-center'>
-
-                          <div className=' px-8 py-2 rounded text-center mt-4'>
+                          <div className=' px-8 py-2 rounded text-center mt-4 lg:order-4' >
                             {/* <------------- Nombre de usuario ----------------->*/}
                             <div className="text-lg font-thin ">
                               @{profile.username}
@@ -237,7 +241,12 @@ const Profile = () => {
                             </div>
                           </div>
                           
-                        </div> 
+                        
+                  </div>
+                  {/*<--------------------------------------------------------- CUERPO PERFIL --------------------------------------------------------->*/}
+                  <div className="pb-10">
+
+                        
 
                         {/* <-------- CABECERA DE SECCIONES --------> */}
                         <Box sx={{ width: '100%', marginTop: 4 }}>
@@ -269,8 +278,12 @@ const Profile = () => {
                         </Box>
                   </div>
             </div>
+        
+      
         </div>
-      </section>
+      </div>
+    </div>
+      
     </>
   );
 };
