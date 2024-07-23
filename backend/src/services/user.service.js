@@ -274,6 +274,28 @@ async function followUser(userId, userToFollowId) {
     return [null, error.message];
     }
 }
+
+async function banUser(id) {
+    try {
+        const userBanned = await User.findByIdAndUpdate(id, { $set: { isBanned: true } }, { new: true });
+        if (!userBanned) return [null, "No existe usuario asociado al id ingresado"];
+        return [userBanned, null];
+    } catch (error) {
+        handleError(error, "user.service -> banUser");
+        return [null, error.message];
+    }
+}
+
+async function getBannedUsers() {
+    try {
+        const bannedUsers = await User.find({ isBanned: true });
+        return [bannedUsers, null];
+    } catch (error) {
+        handleError(error, "user.service -> getBannedUsers");
+        return [null, error.message];
+    }
+}
+
   
 module.exports = {
     createUser,
@@ -284,5 +306,7 @@ module.exports = {
     deleteUser,
     getUserFollowedHashtags,
     followUser,
-    unfollowUser
+    unfollowUser,
+    banUser,
+    getBannedUsers
 }

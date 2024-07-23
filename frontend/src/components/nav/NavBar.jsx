@@ -51,7 +51,7 @@ export default function PrimarySearchAppBar( { userId }) {
     try {
       const response = await getUserInformation(userId);
       setDataUser(response.data.data);
-      
+
     } catch (error) {
       console.log(error);
     }
@@ -238,7 +238,7 @@ const loadNotifications = async () => {
       <Box sx={{ flexGrow: 1 }}>
       <AppBar position="sticky" className='bg-zinc-800'>
         <Toolbar>
-        
+
         {/* Texto barra de navegacion */}
           {/* <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block', fontStyle:'oblique' } }}>
             FORUM
@@ -305,7 +305,7 @@ const loadNotifications = async () => {
             <IconButton size="large" edge="end" aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen} color="inherit">
               <UserAvatar userId={userId} />
             </IconButton>
-            
+
           </Box>
 
       	  {/* Boton mas opciones (tres puntos) en pantalla mas pequeña */}

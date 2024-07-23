@@ -21,5 +21,7 @@ router.get("/getUserImageByID/:id", userController.getUserImageByID);
 router.get("/getUserFollowedHashtags/:id", userController.getUserFollowedHashtags);
 router.post("/followUser/:id", userController.followUser);
 router.put("/unfollowUser/:id", userController.unfollowUser);
+router.put("/banUser/:id", authorizationMiddleware.isAdminOrModerator, userController.banUser);
+router.get("/getBannedUsers", authorizationMiddleware.isAdminOrModerator, userController.getBannedUsers);
 
 module.exports = router;

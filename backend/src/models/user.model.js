@@ -28,10 +28,15 @@ const userSchema = new mongoose.Schema(
         joinedAt: { type: Date, default: Date.now, required: true },
         // Imagen de perfil de usuario
         profilePicture: { type: String },
+
+         // Indica si el usuario está baneado y por lo tanto restringido de publicar, comentar o reaccionar.
+         isBanned: { type: Boolean, default: false },
+
         // Token de restablecimiento de contraseña
         resetPasswordToken: { type: String },
         // Fecha de vencimiento del token de restablecimiento de contraseña
         resetPasswordExpires: { type: Date },
+
 
         /*<---------- Relaciones con otros modelos ----------> */
         

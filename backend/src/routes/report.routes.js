@@ -19,5 +19,10 @@ router.delete("/deleteReport/:id", reportController.deleteReport);
 router.get("/getReportsByUser/:id", reportController.getReportsByUser);
 router.get("/getReportsByPost/:id", reportController.getReportsByPost);
 router.get("/getReportsByType/:reportType", reportController.getReportsByType);
+router.patch('/approveReport/:id', reportController.approveReport);
+router.patch('/rejectReport/:id', reportController.rejectReport);
+router.get('/getApprovedReports', reportController.getApprovedReports);
+router.get('/getRejectedReports', reportController.getRejectedReports);
+router.get('/getPendingReports', reportController.getPendingReports);
 
 module.exports = router;
