@@ -1,5 +1,7 @@
 /* <----------------------- SERVICIOS ------------------------> */
 const CommentService = require('../services/comment.service');
+const Post = require('../models/post.model');
+const NotificationService = require('../services/notification.service');
 
 /* <----------------------- SCHEMA ------------------------> */
 // [NOTA]: Revisar incorporacion de schema de COMMENT
@@ -26,6 +28,22 @@ async function createComment(req, res) {
         const [newComment, commentError] = await CommentService.createComment(comment, req.files);
         if (commentError) return respondError(req, res, 400, commentError);
         if (!newComment) return respondError(req, res, 400, 'No se creo el comentario');
+
+                // Encuentra la publicación para obtener la ID del dueño
+                const post = await Post.findById(postId);
+                if (post) {
+                    // Crea una notificación para el dueño de la publicación
+                    const notificationContent = `El usuario ${userId} ha comentado tu publicación.`;
+                    const notificationData = {
+                        contentNotification: notificationContent,
+                        userId: post.ownerId, // Asumiendo que post tiene un campo ownerId
+                        dateNotification: new Date()
+                    };
+
+                    await NotificationService.createNotification(notificationData);
+                    // No es necesario manejar el resultado de la creación de la notificación aquí, pero puedes hacerlo si es necesario
+                }
+
         respondSuccess(req, res, 201, newComment);
     } catch (error) {
         handleError(error, 'comment.controller -> createComment');
