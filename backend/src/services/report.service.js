@@ -131,6 +131,70 @@ async function getReportsByType(reportType){
     }
 }
 
+async function approveReport(id) {
+    try {
+        const updatedReport = await Report.findOneAndUpdate(
+            { _id: id },
+            { status: 'aprobado' },
+            { new: true }
+        );
+        if (!updatedReport) {
+            throw new Error('Reporte no encontrado');
+        }
+        return updatedReport;
+    } catch (error) {
+        console.error('Error al aprobar el reporte:', error);
+        throw error;
+    }
+}
+
+async function rejectReport(id) {
+    try {
+        const updatedReport = await Report.findOneAndUpdate(
+            { _id: id },
+            { status: 'rechazado' },
+            { new: true }
+        );
+        if (!updatedReport) {
+            throw new Error('Reporte no encontrado');
+        }
+        return updatedReport;
+    } catch (error) {
+        console.error('Error al rechazar el reporte:', error);
+        throw error;
+    }
+}
+
+async function getApprovedReports() {
+    try {
+        const approvedReports = await Report.find({ status: 'aprobado' });
+        return approvedReports;
+    } catch (error) {
+        console.error('Error al obtener los reportes aprobados:', error);
+        throw error;
+    }
+}
+
+async function getRejectedReports() {
+    try {
+        const rejectedReports = await Report.find({ status: 'rechazado' });
+        return rejectedReports;
+    } catch (error) {
+        console.error('Error al obtener los reportes rechazados:', error);
+        throw error;
+    }
+}
+
+async function getPendingReports() {
+    try {
+        const pendingReports = await Report.find({ status: 'pendiente' });
+        return pendingReports;
+    } catch (error) {
+        console.error('Error al obtener los reportes pendientes:', error);
+        throw error;
+    }
+}
+
 
 
 module.exports = {
@@ -141,6 +205,11 @@ module.exports = {
     deleteReport,
     getReportsByUser,
     getReportsByPost,
-    getReportsByType
+    getReportsByType,
+    approveReport,
+    rejectReport,
+    getApprovedReports,
+    getRejectedReports,
+    getPendingReports
 };
 
