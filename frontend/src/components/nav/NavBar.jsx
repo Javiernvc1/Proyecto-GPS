@@ -34,6 +34,7 @@ import ExploreIcon from '@mui/icons-material/Explore';
 /* <----------------------- SERVICIOS  -----------------------> */
 import { logout } from "../../services/auth.service.js"
 import { getUserInformation, getUserImage } from "../../services/user.service.js"
+import { searchContent } from "../../services/visualization.service.js"
 
 
 export default function PrimarySearchAppBar( { userId }) {
@@ -123,9 +124,9 @@ export default function PrimarySearchAppBar( { userId }) {
       <MenuItem>
 
         <IconButton size="large" aria-label="show 17 new notifications" color="inherit">
-          <Badge badgeContent={17} color="error">
+  
             <NotificationsIcon />
-          </Badge>
+          
         </IconButton>
         <p>Notifications</p> 
 
@@ -141,7 +142,30 @@ export default function PrimarySearchAppBar( { userId }) {
     </Menu>
   );
 
+  
+    const [query, setQuery] = useState('');
+    const [results, setResults] = useState([]);
+  
+    const handleSearch = async () => {
+      try {
+        const data = await searchContent(query);
+        setResults(data); // Asume que los resultados están en data directamente
+      } catch (error) {
+        console.error("Error al buscar contenido:", error);
+        // Manejar el error adecuadamente
+      }
+    };
 
+    const handleInputChange = (event) => {
+      setQuery(event.target.value);
+    };
+  
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+        handleSearch();
+      }
+    };
 
   return (
       <Box sx={{ flexGrow: 1 }}>
@@ -160,7 +184,11 @@ export default function PrimarySearchAppBar( { userId }) {
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
-            <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }}/>
+            <StyledInputBase placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+              value={query}
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}/>
           </Search>
 
           <Box sx={{ flexGrow: 1 }} />

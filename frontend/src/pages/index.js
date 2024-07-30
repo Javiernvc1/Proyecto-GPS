@@ -43,7 +43,7 @@ export default function Home() {
             <div className='md:col-span-1 md:border-r-2 px-2'>
                   <SideNav/>
                   <HashtagsViewer/>
-                  <ResourcesViewer/>
+                  
             </div>
 
             <div className='md:col-span-3'>
