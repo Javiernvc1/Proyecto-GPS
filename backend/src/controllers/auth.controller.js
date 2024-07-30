@@ -94,7 +94,7 @@ async function forgotPassword(req, res) {
         }
 
         // Enviar correo electrónico con el enlace de restablecimiento de contraseña
-        const resetUrl = `${req.protocol}://${req.get('host')}/resetPassword/${user.resetPasswordToken}`;
+        const resetUrl = `http://localhost:3000/auth/resetPassword/${user.resetPasswordToken}`;
         await EmailService.sendResetPasswordEmail(user.email, user.name, resetUrl);
 
         respondSuccess(req, res, 200, { message: "Correo electrónico de restablecimiento de contraseña enviado" });

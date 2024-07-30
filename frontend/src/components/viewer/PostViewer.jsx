@@ -14,6 +14,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import IosShareIcon from '@mui/icons-material/IosShare';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 
 /* <------------------- COMPONENTES COMMON ---------------------> */
 import UserAvatar from "../common/UserAvatar.jsx";
@@ -30,6 +31,7 @@ import ImageModal from "../modal/ImageModal";
 
 /* <----------------------- SERVICIOS  -------------------------> */
 import { getPosts, deletePost, markInteraction } from "@/services/post.service";
+import { savePost } from "@/services/savedPost.service";
 
 
 const PostViewer = ( { userId } ) => {
@@ -83,6 +85,17 @@ const PostViewer = ( { userId } ) => {
       console.error("Error marking interaction:", error);
     }
   };
+
+  const handleSavePost = async () => {
+        try {
+            const response = await savePost(userId, postId);
+            console.log("Post saved successfully:", response);
+            // Puedes agregar lógica adicional aquí, como mostrar una notificación al usuario
+        } catch (error) {
+            console.error("Error saving post:", error);
+            // Manejar el error, por ejemplo, mostrando una notificación al usuario
+        }
+    };
 
   // <--------- RENDER DE BOTONES DE INTERACCION DE PUBLICACION --------->
   const renderInteractionButton = (post, reactionType) => {
@@ -158,10 +171,13 @@ const PostViewer = ( { userId } ) => {
           </div>
 
           <div>
-            <Button className="bg-zinc-200 hover:bg-zinc-300 text-black rounded-full">
-              <BookmarkIcon/>
+            <Button 
+                className="bg-zinc-200 hover:bg-zinc-300 text-black rounded-full"
+                onClick={handleSavePost}
+            >
+                <BookmarkBorderIcon />
             </Button>
-          </div>
+        </div>
 
         </div>
 

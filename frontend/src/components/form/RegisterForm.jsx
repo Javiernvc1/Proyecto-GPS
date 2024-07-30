@@ -14,7 +14,7 @@ import { AccountCircle, Visibility, VisibilityOff } from '@mui/icons-material';
 /* <----------------------- SERVICIOS  --------------------------> */
 import { register } from "../../services/user.service";
 
-const RegisterForm = ({ toggleForm }) => {
+const RegisterForm = ({ toggleLoginForm }) => {
     const router = useRouter();
     const wizardRef = useRef(null);
 
@@ -74,7 +74,7 @@ const RegisterForm = ({ toggleForm }) => {
         try {
             await register(formData);
             console.log("Registro en la plataforma existoso, redirigiendo a 'login'");
-            toggleForm();
+            toggleRegisterForm();
         } catch (error) {
             console.log(error);
             if (error.response && error.response.data.message) {
@@ -108,7 +108,7 @@ const RegisterForm = ({ toggleForm }) => {
 
             <p className="mt-4 text-sm">
                 ¿Ya tienes una cuenta?
-                <span className="underline cursor-pointer" onClick={toggleForm}>
+                <span className="underline cursor-pointer" onClick={toggleLoginForm}>
                     Iniciar sesión
                 </span>
             </p>

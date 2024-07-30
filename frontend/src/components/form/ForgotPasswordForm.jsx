@@ -3,7 +3,7 @@ import { FormControl, FormGroup, InputLabel, OutlinedInput, InputAdornment, Butt
 import { AccountCircle } from '@mui/icons-material';
 import { forgotPassword } from "../../services/auth.service.js";
 
-const ParentComponent = () => {
+/* const ParentComponent = () => {
     const [isLogin, setIsLogin] = useState(true); // Estado para controlar qué formulario mostrar
 
     const toggleForm = () => {
@@ -20,8 +20,8 @@ const ParentComponent = () => {
         </div>
     );
 };
-
-const ForgotPasswordForm = ({ toggleForm }) => {
+ */
+const ForgotPasswordForm = ({ toggleLoginForm }) => {
     const [email, setEmail] = useState('');
 
     const handleSubmit = async (e) => {
@@ -74,7 +74,7 @@ const ForgotPasswordForm = ({ toggleForm }) => {
 
             <Button
                 color="secondary"
-                onClick={() => toggleForm()}
+                onClick={() => toggleLoginForm()}
                 className='mt-2'
             >
                 Volver al inicio de sesión
@@ -84,4 +84,4 @@ const ForgotPasswordForm = ({ toggleForm }) => {
 };
 
 export default ForgotPasswordForm;
-export { ParentComponent };
+/* export { ParentComponent }; */

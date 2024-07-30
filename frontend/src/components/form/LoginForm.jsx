@@ -13,7 +13,7 @@ import { login } from "../../services/auth.service.js"
 
 import ForgotPasswordForm from './ForgotPasswordForm';
 
-const LoginForm = ({ toggleForm }) => {
+const LoginForm = ({ toggleRegisterForm, toggleForgotPasswordForm }) => {
     const router = useRouter();
     const [credentials, setCredentials] = useState({ email: "", password: "" });
     const [emailError, setEmailError] = useState(false);
@@ -126,7 +126,7 @@ const LoginForm = ({ toggleForm }) => {
 
             <Button
                 color="secondary"
-                onClick={() => setShowForgotPassword(true)}
+                onClick={toggleForgotPasswordForm}
                 className='mt-2'
             >
                 ¿Olvidaste tu contraseña?
@@ -134,7 +134,7 @@ const LoginForm = ({ toggleForm }) => {
 
             <div className="mt-4 text-sm">
                 ¿No tienes una cuenta?
-                <span className="underline cursor-pointer" onClick={toggleForm}>
+                <span className="underline cursor-pointer" onClick={toggleRegisterForm}>
                     Registrate
                 </span>
             </div>
