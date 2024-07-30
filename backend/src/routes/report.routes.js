@@ -1,5 +1,6 @@
 /* <----------------------- MODULOS --------------------------> */
 const express = require('express');
+const REPORTS = require('../constants/reportType.constants.js');
 
 /* <----------------------- CONTROLADOR ---------------------------> */
 const reportController = require('../controllers/report.controller');
@@ -24,5 +25,9 @@ router.patch('/rejectReport/:id', reportController.rejectReport);
 router.get('/getApprovedReports', reportController.getApprovedReports);
 router.get('/getRejectedReports', reportController.getRejectedReports);
 router.get('/getPendingReports', reportController.getPendingReports);
+
+router.get('/reportTypes', (req, res) => {
+    res.json(REPORTS);
+});
 
 module.exports = router;

@@ -70,7 +70,7 @@ export const getReportsByType = async (reportType) => {
 
 export const approveReport = async (id) => {
     try {
-        return await axios.put(`reports/approveReport/${id}`, {}, { headers });
+        return await axios.patch(`reports/approveReport/${id}`, {}, { headers });
     } catch (error) {
         console.log("FRONTEND: Error en report.service -> approveReport", error);
     }
@@ -78,7 +78,7 @@ export const approveReport = async (id) => {
 
 export const rejectReport = async (id) => {
     try {
-        return await axios.put(`reports/rejectReport/${id}`, {}, { headers });
+        return await axios.patch(`reports/rejectReport/${id}`, {}, { headers });
     } catch (error) {
         console.log("FRONTEND: Error en report.service -> rejectReport", error);
     }
@@ -105,5 +105,13 @@ export const getPendingReports = async () => {
         return await axios.get("reports/getPendingReports", { headers });
     } catch (error) {
         console.log("FRONTEND: Error en report.service -> getPendingReports", error);
+    }
+};
+
+export const getReportTypes = async () => {
+    try {
+        return await axios.get("reports/reportTypes", { headers });
+    } catch (error) {
+        console.log("FRONTEND: Error en report.service -> getReportTypes", error);
     }
 };

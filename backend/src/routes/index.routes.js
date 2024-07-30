@@ -18,7 +18,7 @@ const authorizationMiddleware  = require("../middlewares/authorization.middlewar
 const router = express.Router();
 
 router.use("/auth", authRoutes);
-router.use("/users", authenticationMiddleware, userRoutes);
+router.use("/users", userRoutes);
 router.use("/posts", postRoutes);
 router.use("/badges", badgeRoutes);
 router.use("/hashtags", hashtagRoutes);

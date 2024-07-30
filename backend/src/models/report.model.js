@@ -21,8 +21,9 @@ const reportSchema = new mongoose.Schema(
         // Usuario autor del reporte
         userReport: { type: mongoose.Schema.Types.ObjectId, ref: "User"},
         // Publicacion/post que ha sido reportada
-        postReport: { type: mongoose.Schema.Types.ObjectId, ref: "Post",
-        },
+        postReport: { type: mongoose.Schema.Types.ObjectId, ref: "Post"},
+        // Usuario que realizó la publicación reportada
+        postUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
     }
 );
 

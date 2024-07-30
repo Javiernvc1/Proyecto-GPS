@@ -4,7 +4,7 @@ const Post = require("../models/post.model.js");
 
 const { handleError } = require("../utils/errorHandler.js");
 
-async function createReport(report){
+async function createReport(report) {
     try {
         const {
             reportType,
@@ -12,25 +12,34 @@ async function createReport(report){
             userReport,
             postReport
         } = report;
-        const userFound = await User
-        .findById(userReport)
-        .exec();
-        if(!userFound) return [null, "Usuario no encontrado"];
-        const postFound = await Post
-        .findById(postReport)
-        .exec();
-        if(!postFound) return [null, "Publicacion no encontrada"];
+
+        // Verificar si el usuario que reporta existe
+        const userFound = await User.findById(userReport).exec();
+        if (!userFound) return [null, "Usuario no encontrado"];
+
+        // Verificar si la publicación existe
+        const postFound = await Post.findById(postReport).exec();
+        if (!postFound) return [null, "Publicacion no encontrada"];
+
+        // Obtener el usuario que realizó la publicación
+        const postUser = postFound.author;
+
+        // Avisar por consola el ID del usuario que realizó la publicación
+        console.log(`ID del usuario que realizó la publicación: ${postUser}`);
+
+        // Crear el nuevo reporte
         const newReport = new Report({
             reportType,
             contentReport,
             userReport,
-            postReport
+            postReport,
+            postUser // Agregar el usuario que realizó la publicación
         });
+
         await newReport.save();
         return [newReport, null];
-    }
-    catch(error){
-        handleError(error, "report.service -> createReport")
+    } catch (error) {
+        handleError(error, "report.service -> createReport");
     }
 }
 
@@ -60,24 +69,40 @@ async function getReport(id){
     }
 }
 
-async function updateReport(id, report){
+async function updateReport(id, report) {
     try {
         const {
             reportType,
             contentReport,
             userReport,
-            postReport
+            postReport,
+            status
         } = report;
+
+        // Verificar que todos los parámetros estén presentes
+        if (!reportType || !contentReport || !userReport || !postReport || !status) {
+            return [null, "Faltan parámetros en el cuerpo de la solicitud"];
+        }
+
+        // Verificar que el status sea válido
+        const validStatuses = ["aprobado", "pendiente", "rechazado"];
+        if (!validStatuses.includes(status)) {
+            return [null, "Estado no válido"];
+        }
+
         const reportFound = await Report.findById(id);
-        if(!reportFound) return [null, "Reporte no encontrado"];
+        if (!reportFound) return [null, "Reporte no encontrado"];
+
         const userFound = await User.findById(userReport);
-        if(!userFound) return [null, "Usuario no encontrado"];
+        if (!userFound) return [null, "Usuario no encontrado"];
+
         const postFound = await Post.findById(postReport);
-        if(!postFound) return [null, "Publicacion no encontrada"];
+        if (!postFound) return [null, "Publicacion no encontrada"];
+
         await Report.findByIdAndUpdate(id, report);
         return [report, null];
     } catch (error) {
-        handleError(error, "report.service -> updateReport")
+        handleError(error, "report.service -> updateReport");
     }
 }
 
@@ -133,14 +158,25 @@ async function getReportsByType(reportType){
 
 async function approveReport(id) {
     try {
+        // Encontrar el reporte por ID
+        const report = await Report.findById(id).exec();
+        if (!report) {
+            throw new Error('Reporte no encontrado');
+        }
+
+        // Actualizar el estado del reporte a 'aprobado'
         const updatedReport = await Report.findOneAndUpdate(
             { _id: id },
             { status: 'aprobado' },
             { new: true }
         );
-        if (!updatedReport) {
-            throw new Error('Reporte no encontrado');
-        }
+
+        // Extraer el ID de la publicación desde el objeto postReport
+        const postId = report.postReport._id;
+
+        // Eliminar la publicación asociada al reporte
+        await Post.findByIdAndDelete(postId).exec();
+
         return updatedReport;
     } catch (error) {
         console.error('Error al aprobar el reporte:', error);

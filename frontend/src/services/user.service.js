@@ -14,6 +14,22 @@ export const register = async (formData) => {
     }
 }
 
+export const getUsers = async () => {
+    try {
+        return axios.get("users/getUsers");
+    } catch (error) {
+        console.log("FRONTEND: Error en user.service -> getUsers", error);
+    }
+}
+
+export const getUserImageByID = async (id) => {
+    try {
+        return axios.get(`users/getUserImageByID/${id}`);
+    } catch (error) {
+        console.log("FRONTEND: Error en user.service -> getUserImageByID", error);
+    }
+}
+
 export const getUserInformation = async (id) => {
     try {
         return axios.get(`users/getUserByID/${id}`);
