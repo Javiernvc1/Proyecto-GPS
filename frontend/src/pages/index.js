@@ -41,7 +41,7 @@ export default function Home() {
           <div className='grid grid-cols-1 md:grid-cols-4 md:gap-4'>
 
             <div className='md:col-span-1 md:border-r-2 px-2'>
-                  <SideNav/>
+                  <SideNav userId={userId}/>
                   <HashtagsViewer/>
                   
             </div>

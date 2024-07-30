@@ -250,7 +250,7 @@ const Profile = () => {
 
                         {/* <-------- CABECERA DE SECCIONES --------> */}
                         <Box sx={{ width: '100%', marginTop: 4 }}>
-                              <Box sx={{ borderTop: 1, borderBottom: 1, borderColor: 'divider' }}>
+                              <Box sx={{ borderTop: 1, borderBottom: 1, borderColor: 'white' }}>
                               {/*<---- Pestañas de secciones del perfil ---->*/}
                                 <Tabs centered value={section} onChange={handleSectionChange}>
                                   <Tab icon={<ViewHeadlineIcon />}  {...a11yProps(0)} />

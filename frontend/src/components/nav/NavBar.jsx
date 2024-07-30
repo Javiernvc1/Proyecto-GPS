@@ -33,7 +33,7 @@ import ExploreIcon from '@mui/icons-material/Explore';
 
 /* <----------------------- SERVICIOS  -----------------------> */
 import { logout } from "../../services/auth.service.js"
-import { getUserInformation, getUserImage } from "../../services/user.service.js"
+import { getUserInformation, getUserImage } from "../../services/user.service.js";
 import { searchContent } from "../../services/visualization.service.js"
 
 
@@ -93,7 +93,7 @@ export default function PrimarySearchAppBar( { userId }) {
         router.push(`/profile/${userId}`);
         handleMenuClose();
       }}>Perfil</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Mi cuenta</MenuItem>
+      {/*<MenuItem onClick={handleMenuClose}>Mi cuenta</MenuItem>*/}
       <MenuItem onClick={ () => {
           logout()
           router.push('/auth');
