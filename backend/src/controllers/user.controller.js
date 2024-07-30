@@ -176,6 +176,42 @@ async function unfollowUser(req, res) {
     }
 }
 
+async function banUser(req, res) {
+    try {
+        const { id } = req.params; // Obtiene el ID del usuario desde los parámetros de la solicitud.
+        const [userBanned, error] = await UserService.banUser(id); // Llama al servicio banUser.
+
+        if (error) {
+            return respondError(req, res, 400, error); // Responde con error si el servicio retorna un mensaje de error.
+        }
+
+        if (!userBanned) {
+            return respondError(req, res, 404, "No se encontró el usuario especificado."); // Responde con error si no se encuentra el usuario.
+        }
+
+        // Modificación aquí: incluir el ID del usuario en el mensaje de éxito.
+        respondSuccess(req, res, 200, { message: `Usuario con ID ${id} baneado exitosamente.`, data: userBanned }); // Responde con éxito si el usuario fue baneado.
+    } catch (error) {
+        handleError(error, "user.controller -> banUserController"); // Maneja cualquier error inesperado.
+        respondError(req, res, 500, "Error al intentar banear al usuario."); // Responde con error de servidor.
+    }
+}
+
+async function getBannedUsers(req, res) {
+    try {
+        const [bannedUsers, error] = await UserService.getBannedUsers();
+        if (error) return respondError(req, res, 500, "Error al buscar usuarios baneados");
+        if (bannedUsers.length === 0) {
+            return respondSuccess(req, res, 200, "No existen usuarios baneados en la base de datos");
+        }
+        respondSuccess(req, res, 200, { message: "Usuarios baneados encontrados: ", data: bannedUsers });
+    } catch (error) {
+        handleError(error, "user.controller -> getBannedUsers");
+        respondError(req, res, 500, "No se pudo encontrar usuarios baneados");
+    }
+}
+
+
 module.exports = {
     createUser,
     getUsers,
@@ -185,5 +221,7 @@ module.exports = {
     deleteUser,
     getUserFollowedHashtags,
     followUser,
-    unfollowUser
+    unfollowUser,
+    banUser,
+    getBannedUsers
 }

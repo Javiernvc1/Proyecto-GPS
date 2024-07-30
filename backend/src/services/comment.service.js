@@ -27,6 +27,8 @@ async function createComment(comment, files = []) {
         const userFound = await User.findById(userId);
         if(!userFound) return [ null, "Usuario no encontrado"];
 
+        if (userFound.isBanned) return [null, `El usuario con ID ${userId} está baneado y no puede realizar comentarios.`];
+
         const postFound = await Post.findById(postId);
         if (!postFound) return [ null, "Publicacion no encontrada"];
         if(!postFound.status) return [null, "La publicacion esta cerrada y no permite comentarios."];

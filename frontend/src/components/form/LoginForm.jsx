@@ -11,10 +11,14 @@ import { AccountCircle, Visibility, VisibilityOff } from '@mui/icons-material';
 /* <----------------------- SERVICIOS  -----------------------> */
 import { login } from "../../services/auth.service.js"
 
+import ForgotPasswordForm from './ForgotPasswordForm';
+
 const LoginForm = ({ toggleForm }) => {
     const router = useRouter();
     const [credentials, setCredentials] = useState({ email: "", password: "" });
     const [emailError, setEmailError] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,41 +27,40 @@ const LoginForm = ({ toggleForm }) => {
             [name]: value
         }));
 
-        // Validar el formato del correo electrónico
         if (name === 'email' && value.trim() !== '') {
             const isValidEmail = validateEmail(value);
             setEmailError(!isValidEmail);
         } else {
-            setEmailError(false); // Restablecer el estado de emailError si el campo está vacío
+            setEmailError(false);
         }
     };
 
     const validateEmail = (email) => {
-        // Expresión regular para validar el formato del correo electrónico
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
+    };
+
+    const handleClickShowPassword = () => setShowPassword(!showPassword);
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
     };
 
     const onSubmit = async (e) => {
         e.preventDefault();
         try {
             await login(credentials);
-            router.push("/")
+            router.push("/");
         } catch (error) {
             console.log(error);
         }
     };
 
-    const [showPassword, setShowPassword] = useState(false);
-
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
-
-    // Determinar si el botón de envío debe estar deshabilitado
     const isSubmitDisabled = !validateEmail(credentials.email) || credentials.password === '';
+
+    if (showForgotPassword) {
+        return <ForgotPasswordForm />;
+    }
 
     return (
         <div className='flex flex-col'>
@@ -103,7 +106,11 @@ const LoginForm = ({ toggleForm }) => {
                                 value={credentials.password}
                                 endAdornment={
                                     <InputAdornment position="end">
-                                        <IconButton onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword}>
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                        >
                                             {showPassword ? <VisibilityOff /> : <Visibility />}
                                         </IconButton>
                                     </InputAdornment>}
@@ -113,10 +120,17 @@ const LoginForm = ({ toggleForm }) => {
                         <Button variant="contained" color="primary" type="submit" disabled={isSubmitDisabled} className='mt-4 py-4 normal-case'>
                             Iniciar sesión
                         </Button>
-
                     </FormGroup>
                 </FormControl>
             </form>
+
+            <Button
+                color="secondary"
+                onClick={() => setShowForgotPassword(true)}
+                className='mt-2'
+            >
+                ¿Olvidaste tu contraseña?
+            </Button>
 
             <div className="mt-4 text-sm">
                 ¿No tienes una cuenta?
@@ -125,7 +139,7 @@ const LoginForm = ({ toggleForm }) => {
                 </span>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default LoginForm;

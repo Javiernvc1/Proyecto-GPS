@@ -34,6 +34,30 @@ async function isAdmin(req, res, next) {
   }
 }
 
+async function isAdminOrModerator(req, res, next) {
+  try {
+    const user = await User.findOne({ email: req.email });
+
+    if (!user) {
+      return respondError(req, res, 401, "Usuario no autenticado");
+    }
+
+    const roles = await Role.find({ _id: { $in: user.roleUser } });
+
+    for (let i = 0; i < roles.length; i++) {
+      if (roles[i].nameRole === "Administrador" || roles[i].nameRole === "Moderador") {
+        next();
+        return;
+      }
+    }
+    return respondError(req, res, 401, "Se requiere un rol de administrador o moderador para realizar esta acción");
+  } catch (error) {
+    handleError(error, "authorization.middleware -> isAdminOrModerator");
+  }
+}
+
+
 module.exports = {
   isAdmin,
+  isAdminOrModerator
 };

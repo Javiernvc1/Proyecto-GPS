@@ -29,6 +29,8 @@ async function createPost(post, files = []) {
         const userExists = await User.findOne({ _id: author })
         if(!userExists) return [null, "Id de usuario a crear publicacion no existe, verifica id."];
 
+        if (userExists.isBanned) return [null, `El usuario con ID ${author} está baneado y no puede crear publicaciones.`];
+
         const fileNames = await Promise.all(
             files.map( file => saveImagePost(file) )
         );
@@ -219,6 +221,9 @@ async function markPostInteraction(postId, userId, interactionType){
         if(!postExist) return [null, `No se encontro publicacion de id: ${id}`];
         const userExist = await User.findById(userId);
         if(!userExist) return [null, `No se encontro usuario de id: ${userId}`];
+
+        if(userExist.isBanned) return [null, `El usuario con ID ${userId} está baneado y no puede interactuar con la publicación.`];
+        
         if (interactionType !== "helpful" && interactionType !== "nothelpful") return [null, "El tipo de interacción debe ser 'helpful' o 'nothelpful'"]
 
         // Busqueda de interacciones previas de usuario con la publicacion

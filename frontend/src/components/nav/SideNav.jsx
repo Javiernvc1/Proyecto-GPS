@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import ReportIcon from '@mui/icons-material/Report'; // Importar el icono de Reporte
 
 import { logout } from "../../services/auth.service.js"
 import { getUserInformation, getUserImage } from "../../services/user.service.js";
@@ -54,8 +55,13 @@ const SideNav = ({ userId }) => {
             <PersonSearchIcon fontSize={"large"}/> Buscar Usuarios
           </a>
         </li>
-      </ul>
 
+        <li className='py-2 px-4 hover:bg-zinc-200 cursor-pointer rounded-lg' onClick={() => router.push(`/reportes`)}>
+          <a>
+            <ReportIcon fontSize={"large"}/> Gestión de Reportes
+          </a>
+        </li>
+      </ul>
   )
 }
 

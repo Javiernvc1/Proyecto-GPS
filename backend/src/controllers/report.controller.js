@@ -104,6 +104,67 @@ async function getReportsByType(req, res) {
     }
 }
 
+async function approveReport(req, res) {
+    try {
+        const { id } = req.params;
+        const updatedReport = await ReportService.approveReport(id);
+        if (!updatedReport) {
+            return respondError(req, res, 400, 'Reporte no encontrado');
+        }
+        const successMessage = `El reporte con el ID ${id} ha sido aprobado.`;
+        respondSuccess(req, res, 200, { message: successMessage, report: updatedReport });
+    } catch (error) {
+        handleError(error, 'report.controller -> approveReport');
+        respondError(req, res, 500, 'Error al aprobar el reporte');
+    }
+}
+
+async function rejectReport(req, res) {
+    try {
+        const { id } = req.params;
+        const updatedReport = await ReportService.rejectReport(id);
+        if (!updatedReport) {
+            return respondError(req, res, 400, 'Reporte no encontrado');
+        }
+        const successMessage = `El reporte con el ID ${id} ha sido rechazado.`;
+        respondSuccess(req, res, 200, { message: successMessage, report: updatedReport });
+    } catch (error) {
+        handleError(error, 'report.controller -> rejectReport');
+        respondError(req, res, 500, 'Error al rechazar el reporte');
+    }
+}
+
+async function getApprovedReports(req, res) {
+    try {
+        const approvedReports = await ReportService.getApprovedReports();
+        respondSuccess(req, res, 200, { reports: approvedReports });
+    } catch (error) {
+        handleError(error, 'report.controller -> getApprovedReports');
+        respondError(req, res, 500, 'Error al obtener los reportes aprobados');
+    }
+}
+
+async function getRejectedReports(req, res) {
+    try {
+        const rejectedReports = await ReportService.getRejectedReports();
+        respondSuccess(req, res, 200, { reports: rejectedReports });
+    } catch (error) {
+        handleError(error, 'report.controller -> getRejectedReports');
+        respondError(req, res, 500, 'Error al obtener los reportes rechazados');
+    }
+}
+
+async function getPendingReports(req, res) {
+    try {
+        const pendingReports = await ReportService.getPendingReports();
+        respondSuccess(req, res, 200, { reports: pendingReports });
+    } catch (error) {
+        handleError(error, 'report.controller -> getPendingReports');
+        respondError(req, res, 500, 'Error al obtener los reportes pendientes');
+    }
+}
+
+
 module.exports = {
     createReport,
     getReports,
@@ -113,4 +174,9 @@ module.exports = {
     getReportsByUser,
     getReportsByPost,
     getReportsByType,
+    approveReport,
+    rejectReport,
+    getApprovedReports,
+    getRejectedReports,
+    getPendingReports,
 };
